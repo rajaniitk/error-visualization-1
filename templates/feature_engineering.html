@@ -5,6 +5,11 @@
 {% block page_title %}Feature Engineering{% endblock %}
 {% block page_subtitle %}Transform and create new features to improve your data quality{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feature_engineering.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item">
     <a href="{{ url_for('index') }}">Dashboard</a>
@@ -291,16 +296,38 @@
 
 </div>
 
-<!-- Loading Modal -->
+<!-- Download Section -->
+<div class="download-section" id="download-section" style="display: none;">
+    <h3><i class="fas fa-download"></i> Download Processed Dataset</h3>
+    <p>Your dataset has been processed with the applied feature engineering transformations.</p>
+    <div class="download-options">
+        <button class="download-btn" onclick="downloadDataset('csv')">
+            <i class="fas fa-file-csv"></i>
+            Download CSV
+        </button>
+        <button class="download-btn" onclick="downloadDataset('excel')">
+            <i class="fas fa-file-excel"></i>
+            Download Excel
+        </button>
+        <button class="download-btn" onclick="downloadDataset('json')">
+            <i class="fas fa-file-code"></i>
+            Download JSON
+        </button>
+    </div>
+    <div class="progress-container" id="download-progress" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p id="progress-text">Preparing download...</p>
+    </div>
+</div>
+
+<!-- Enhanced Loading Modal -->
 <div id="fe-loading-modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3>Processing...</h3>
-        </div>
-        <div class="modal-body">
-            <div class="spinner"></div>
-            <p>Please wait while we process your feature engineering request.</p>
-        </div>
+        <div class="loading-spinner"></div>
+        <h4>Processing...</h4>
+        <p id="loading-message">Please wait while we process your feature engineering request.</p>
     </div>
 </div>
 
