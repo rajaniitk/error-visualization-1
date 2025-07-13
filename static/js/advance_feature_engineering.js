@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingModal = document.getElementById('adv-fe-loading-modal');
     
     // Initialize
+    console.log('ADV: Initializing advanced feature engineering...');
+    console.log('ADV: Dataset select element:', datasetSelect);
+    console.log('ADV: Refresh button:', refreshButton);
+    console.log('ADV: Engineering sections:', engineeringSections);
+    
     loadDatasets();
     setupEventListeners();
     
@@ -71,17 +76,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function loadDatasets() {
         try {
+            console.log('ADV: Loading datasets...');
+            
             // Fetch real datasets from the API
             const response = await fetch('/api/data/datasets');
+            console.log('ADV: Response status:', response.status);
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
+            console.log('ADV: Received data:', data);
             
             datasetSelect.innerHTML = '<option value="">Choose a dataset...</option>';
             
             if (data.success && data.datasets) {
+                console.log('ADV: Found datasets:', data.datasets.length);
                 data.datasets.forEach(dataset => {
                     const option = document.createElement('option');
                     option.value = dataset.id;
@@ -89,11 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasetSelect.appendChild(option);
                 });
             } else {
-                console.log('No datasets available');
+                console.log('ADV: No datasets available or error:', data.error);
+                showError('No datasets found. Please upload a dataset first.');
             }
             
         } catch (error) {
-            console.error('Error loading datasets:', error);
+            console.error('ADV: Error loading datasets:', error);
             showError('Failed to load datasets: ' + error.message);
         }
     }

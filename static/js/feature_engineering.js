@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingModal = document.getElementById('fe-loading-modal');
     
     // Initialize
+    console.log('FE: Initializing feature engineering...');
+    console.log('FE: Dataset select element:', datasetSelect);
+    console.log('FE: Refresh button:', refreshButton);
+    console.log('FE: Engineering panel:', engineeringPanel);
+    
     loadDatasets();
     setupEventListeners();
     
@@ -47,18 +52,23 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadDatasets() {
         try {
             showLoading('Loading datasets...');
+            console.log('Loading datasets...');
             
             // Fetch real datasets from the API
             const response = await fetch('/api/data/datasets');
+            console.log('Response status:', response.status);
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
+            console.log('Received data:', data);
             
             datasetSelect.innerHTML = '<option value="">Choose a dataset...</option>';
             
             if (data.success && data.datasets) {
+                console.log('Found datasets:', data.datasets.length);
                 data.datasets.forEach(dataset => {
                     const option = document.createElement('option');
                     option.value = dataset.id;
@@ -66,12 +76,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasetSelect.appendChild(option);
                 });
             } else {
+                console.log('No datasets found or error:', data.error);
                 showError('No datasets found. Please upload a dataset first.');
             }
             
         } catch (error) {
             console.error('Error loading datasets:', error);
-            showError('Failed to load datasets. Please check your connection.');
+            showError('Failed to load datasets. Error: ' + error.message);
         } finally {
             hideLoading();
         }
