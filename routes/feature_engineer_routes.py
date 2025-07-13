@@ -41,6 +41,21 @@ def get_datasets():
         # Return a JSON response indicating failure and the error message, with a 500 status code
         return jsonify({'success': False, 'error': f"An internal server error occurred while retrieving datasets: {str(e)}"}), 500
 
+@feature_engineer_bp.route('/columns/<int:dataset_id>', methods=['GET'])
+def get_columns(dataset_id):
+    """Get column information for a dataset"""
+    try:
+        dataset = Dataset.query.get_or_404(dataset_id)
+        processor = DataProcessor()
+        
+        column_info = processor.get_columns_info(dataset.file_path)
+        
+        return jsonify(column_info)
+        
+    except Exception as e:
+        logging.error(f"Get columns error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @feature_engineer_bp.route('/scale', methods=['POST'])
 def apply_scaling():
     """Apply scaling transformation to a feature"""

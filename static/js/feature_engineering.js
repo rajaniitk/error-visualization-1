@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading('Loading dataset features...');
         
         try {
-            // Fetch real features from the API
-            const response = await fetch(`/api/data/columns/${datasetId}`);
+            // Fetch real features from the feature engineering API
+            const response = await fetch(`/api/feature/columns/${datasetId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

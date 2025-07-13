@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from services.advance_feature_engineering import AdvanceFeatureEngineering
+from services.data_processor import DataProcessor
 from models import Dataset, FeatureEngineering
 import logging
 from database import db
@@ -39,6 +40,21 @@ def get_datasets():
         logging.error(f"Error fetching datasets: {str(e)}")
         # Return a JSON response indicating failure and the error message, with a 500 status code
         return jsonify({'success': False, 'error': f"An internal server error occurred while retrieving datasets: {str(e)}"}), 500
+
+@advance_feature_engineering_bp.route('/columns/<int:dataset_id>', methods=['GET'])
+def get_columns(dataset_id):
+    """Get column information for a dataset"""
+    try:
+        dataset = Dataset.query.get_or_404(dataset_id)
+        processor = DataProcessor()
+        
+        column_info = processor.get_columns_info(dataset.file_path)
+        
+        return jsonify(column_info)
+        
+    except Exception as e:
+        logging.error(f"Get columns error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @advance_feature_engineering_bp.route('/pca/<int:dataset_id>', methods=['POST'])
 def perform_pca(dataset_id):
