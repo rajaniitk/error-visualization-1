@@ -2,6 +2,11 @@
 
 {% block title %}Advanced Feature Engineering{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feature_engineering.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
 {% block header_title %}Advanced Feature Engineering{% endblock %}
 
 {% block content %}
@@ -395,9 +400,37 @@
     </div>
 </div>
 
+<!-- Download Section -->
+<div class="download-section" id="download-section" style="display: none;">
+    <h3><i class="fas fa-download"></i> Download Processed Dataset</h3>
+    <p>Your dataset has been processed with the applied advanced feature engineering transformations.</p>
+    <div class="download-options">
+        <button class="download-btn" onclick="downloadDataset('csv')">
+            <i class="fas fa-file-csv"></i>
+            Download CSV
+        </button>
+        <button class="download-btn" onclick="downloadDataset('excel')">
+            <i class="fas fa-file-excel"></i>
+            Download Excel
+        </button>
+        <button class="download-btn" onclick="downloadDataset('json')">
+            <i class="fas fa-file-code"></i>
+            Download JSON
+        </button>
+    </div>
+    <div class="progress-container" id="download-progress" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p id="progress-text">Preparing download...</p>
+    </div>
+</div>
+
+<!-- Enhanced Loading Modal -->
 <div id="adv-fe-loading-modal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="loading-spinner"></div>
+        <h4>Processing...</h4>
         <p id="adv-fe-loading-message">Creating advanced features...</p>
     </div>
 </div>

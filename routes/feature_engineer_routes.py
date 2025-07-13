@@ -41,6 +41,65 @@ def get_datasets():
         # Return a JSON response indicating failure and the error message, with a 500 status code
         return jsonify({'success': False, 'error': f"An internal server error occurred while retrieving datasets: {str(e)}"}), 500
 
+@feature_engineer_bp.route('/columns/<int:dataset_id>', methods=['GET'])
+def get_columns(dataset_id):
+    """Get column information for a dataset"""
+    try:
+        dataset = Dataset.query.get_or_404(dataset_id)
+        processor = DataProcessor()
+        
+        column_info = processor.get_columns_info(dataset.file_path)
+        
+        return jsonify(column_info)
+        
+    except Exception as e:
+        logging.error(f"Get columns error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@feature_engineer_bp.route('/download/<int:dataset_id>/<format>', methods=['GET'])
+def download_dataset(dataset_id, format):
+    """Download the processed dataset in the specified format"""
+    from flask import send_file, abort
+    import os
+    import pandas as pd
+    import tempfile
+    
+    try:
+        dataset = Dataset.query.get_or_404(dataset_id)
+        processor = DataProcessor()
+        
+        # Load the dataset
+        df = processor.load_dataset(dataset)
+        
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{format}') as tmp_file:
+            if format == 'csv':
+                df.to_csv(tmp_file.name, index=False)
+                mimetype = 'text/csv'
+            elif format == 'excel':
+                df.to_excel(tmp_file.name, index=False)
+                mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            elif format == 'json':
+                df.to_json(tmp_file.name, orient='records', indent=2)
+                mimetype = 'application/json'
+            else:
+                abort(400, description="Invalid format")
+                
+            # Generate filename
+            base_name = dataset.filename.rsplit('.', 1)[0]
+            filename = f"{base_name}_engineered.{format}"
+            
+            return send_file(
+                tmp_file.name,
+                mimetype=mimetype,
+                as_attachment=True,
+                download_name=filename
+            )
+            
+    except Exception as e:
+        logging.error(f"Download error: {str(e)}")
+        abort(500, description="Failed to download dataset")
+
 @feature_engineer_bp.route('/scale', methods=['POST'])
 def apply_scaling():
     """Apply scaling transformation to a feature"""

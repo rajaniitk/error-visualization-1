@@ -1,3 +1,5 @@
+console.log('Feature Engineering JavaScript loaded!');
+
 document.addEventListener('DOMContentLoaded', function() {
     // Global variables
     let currentDatasetId = null;
@@ -11,6 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingModal = document.getElementById('fe-loading-modal');
     
     // Initialize
+    console.log('FE: Initializing feature engineering...');
+    console.log('FE: Dataset select element:', datasetSelect);
+    console.log('FE: Refresh button:', refreshButton);
+    console.log('FE: Engineering panel:', engineeringPanel);
+    
     loadDatasets();
     setupEventListeners();
     
@@ -47,18 +54,23 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadDatasets() {
         try {
             showLoading('Loading datasets...');
+            console.log('Loading datasets...');
             
             // Fetch real datasets from the API
             const response = await fetch('/api/data/datasets');
+            console.log('Response status:', response.status);
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
+            console.log('Received data:', data);
             
             datasetSelect.innerHTML = '<option value="">Choose a dataset...</option>';
             
             if (data.success && data.datasets) {
+                console.log('Found datasets:', data.datasets.length);
                 data.datasets.forEach(dataset => {
                     const option = document.createElement('option');
                     option.value = dataset.id;
@@ -66,12 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasetSelect.appendChild(option);
                 });
             } else {
+                console.log('No datasets found or error:', data.error);
                 showError('No datasets found. Please upload a dataset first.');
             }
             
         } catch (error) {
             console.error('Error loading datasets:', error);
-            showError('Failed to load datasets. Please check your connection.');
+            showError('Failed to load datasets. Error: ' + error.message);
         } finally {
             hideLoading();
         }
@@ -722,6 +735,84 @@ document.addEventListener('DOMContentLoaded', function() {
     function showSuccess(message) {
         alert(message); // In a real app, use a proper notification system
     }
+    
+    // Download functionality
+    function downloadDataset(format) {
+        if (!currentDatasetId) {
+            showError('No dataset selected');
+            return;
+        }
+        
+        showDownloadProgress();
+        
+        const url = `/api/feature/download/${currentDatasetId}/${format}`;
+        
+        // Create a temporary link to trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = '';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Show success message after a brief delay
+        setTimeout(() => {
+            hideDownloadProgress();
+            showSuccess(`Dataset download started in ${format.toUpperCase()} format!`);
+        }, 1000);
+    }
+    
+    function showDownloadProgress() {
+        const progressContainer = document.getElementById('download-progress');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        
+        if (progressContainer && progressFill && progressText) {
+            progressContainer.style.display = 'block';
+            progressText.textContent = 'Preparing download...';
+            
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressFill.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    progressText.textContent = 'Download ready!';
+                }
+            }, 100);
+        }
+    }
+    
+    function hideDownloadProgress() {
+        const progressContainer = document.getElementById('download-progress');
+        const progressFill = document.getElementById('progress-fill');
+        
+        if (progressContainer && progressFill) {
+            progressContainer.style.display = 'none';
+            progressFill.style.width = '0%';
+        }
+    }
+    
+    function showDownloadSection() {
+        const downloadSection = document.getElementById('download-section');
+        if (downloadSection) {
+            downloadSection.style.display = 'block';
+        }
+    }
+    
+    // Show download section when any transformation is applied
+    const originalShowSuccess = showSuccess;
+    function showSuccess(message) {
+        originalShowSuccess(message);
+        if (currentDatasetId && engineeredFeatures.length > 0) {
+            showDownloadSection();
+        }
+    }
+    
+    // Make download function global
+    window.downloadDataset = downloadDataset;
 });
 
 // Add CSS for feature engineering
@@ -1025,4 +1116,5 @@ const feCSS = `
 </style>
 `;
 
-document.head.insertAdjacentHTML('beforeend', feCSS);
+// CSS is now loaded from external file: feature_engineering.css
+// document.head.insertAdjacentHTML('beforeend', feCSS);
