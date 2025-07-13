@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showLoading('Loading datasets...');
             
-            // Fetch real datasets from the feature engineering API
-            const response = await fetch('/api/feature/datasets');
+            // Fetch real datasets from the API
+            const response = await fetch('/api/data/datasets');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading('Loading dataset features...');
         
         try {
-            // Fetch real features from the feature engineering API
-            const response = await fetch(`/api/feature/columns/${datasetId}`);
+            // Fetch real features from the API
+            const response = await fetch(`/api/data/columns/${datasetId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
