@@ -22,6 +22,7 @@ def get_datasets():
                 'rows': dataset.num_rows,
                 'columns': dataset.num_columns,
                 'file_size': dataset.file_size,
+                'column_names': dataset.column_names,
                 # Safely format the upload timestamp:
                 # If dataset.created_at is None, assign None. Otherwise, call isoformat().
                 'created_at': dataset.upload_timestamp.isoformat() if dataset.upload_timestamp else None

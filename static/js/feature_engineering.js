@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showLoading('Loading datasets...');
             
-            // Fetch real datasets from the API
-            const response = await fetch('/api/data/datasets');
+            // Fetch real datasets from the feature engineering API
+            const response = await fetch('/api/feature/datasets');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

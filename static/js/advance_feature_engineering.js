@@ -71,8 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function loadDatasets() {
         try {
-            // Fetch real datasets from the API
-            const response = await fetch('/api/data/datasets');
+            // Fetch real datasets from the advanced feature engineering API
+            const response = await fetch('/api/advance-feature/datasets');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.datasets.forEach(dataset => {
                     const option = document.createElement('option');
                     option.value = dataset.id;
-                    option.textContent = `${dataset.name} (${dataset.rows} rows, ${dataset.columns} cols)`;
+                    option.textContent = `${dataset.filename} (${dataset.rows} rows, ${dataset.columns} cols)`;
                     datasetSelect.appendChild(option);
                 });
             } else {
