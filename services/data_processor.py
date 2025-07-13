@@ -33,7 +33,10 @@ class DataProcessor:
             filename = secure_filename(file.filename)
             file_path = os.path.join(self.upload_folder, filename)
             
-            # Note: File is already saved by the route, so we just parse it
+            # Save the file if it hasn't been saved yet
+            if not os.path.exists(file_path):
+                file.save(file_path)
+            
             # Parse the file
             df = self.parse_file(file_path, filename)
             if df is None:

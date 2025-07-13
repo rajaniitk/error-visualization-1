@@ -13,8 +13,19 @@ from sklearn.model_selection import train_test_split, cross_val_score, GridSearc
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, explained_variance_score
-import xgboost as xgb
-import lightgbm as lgb
+try:
+    import xgboost as xgb
+    HAS_XGB = True
+except ImportError:
+    xgb = None
+    HAS_XGB = False
+
+try:
+    import lightgbm as lgb
+    HAS_LGB = True
+except ImportError:
+    lgb = None
+    HAS_LGB = False
 import logging
 from datetime import datetime
 import pickle

@@ -80,19 +80,8 @@ def upload_file():
             logging.error(f"Error creating upload directory '{upload_folder}': {e}", exc_info=True)
             return jsonify({'success': False, 'error': f"Server error: Could not create upload directory."}), 500
 
-        # 3. Save the File
-        try:
-            file.save(file_path)
-        except Exception as e:
-            logging.error(f"Error saving file '{filename}' to '{file_path}': {e}", exc_info=True)
-            return jsonify({'success': False, 'error': f'Could not save file: {e}'}), 500
-
-        # 4. Process File using DataProcessor Service
+        # 3. Process File using DataProcessor Service (which will save the file)
         processor = DataProcessor()
-        # Assuming process_upload expects the file object itself, or file_path and filename.
-        # Let's assume it's expecting the file object, based on your DataProcessor class signature.
-        # If process_upload expects file_path and filename, change the call.
-        # Example: result = processor.process_upload(file_path, filename)
         result = processor.process_upload(file) 
         
         # 5. Handle Service Result and Database Operation

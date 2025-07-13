@@ -8,7 +8,11 @@
 <div class="advanced-fe-container">
     <div class="dashboard-header">
         <h2>Advanced Feature Engineering</h2>
-        <p>Create sophisticated features using advanced techniques and algorithms</p>
+        <div class="alert alert-primary" role="alert">
+            <h5><i class="fas fa-brain me-2"></i>Advanced Feature Engineering Techniques</h5>
+            <p><strong>Purpose:</strong> Apply sophisticated machine learning techniques to extract complex patterns and relationships from your data.</p>
+            <p><strong>Description:</strong> These advanced methods go beyond basic transformations to create high-level features through dimensionality reduction, feature selection, clustering analysis, and automated feature extraction. Each technique is designed to capture non-linear relationships and uncover hidden insights in your dataset.</p>
+        </div>
     </div>
 
     <div class="dataset-selector">
@@ -31,7 +35,10 @@
                 
                 <!-- Polynomial Features -->
                 <div class="technique-category">
-                    <h4>Polynomial Features</h4>
+                    <h4><i class="fas fa-superscript me-2"></i>Polynomial Features</h4>
+                    <div class="alert alert-info mb-3" role="alert">
+                        <p><strong>Description:</strong> Generate polynomial combinations of features to capture non-linear relationships. Creates features like x², x³, and interaction terms (x₁×x₂) that can reveal complex patterns in your data.</p>
+                    </div>
                     <div class="technique-content">
                         <div class="form-row">
                             <div class="form-group">
@@ -51,7 +58,10 @@
 
                 <!-- Feature Extraction -->
                 <div class="technique-category">
-                    <h4>Feature Extraction</h4>
+                    <h4><i class="fas fa-compress-arrows-alt me-2"></i>Dimensionality Reduction</h4>
+                    <div class="alert alert-info mb-3" role="alert">
+                        <p><strong>Description:</strong> Reduce feature space while preserving important information. Techniques like PCA find principal components, ICA identifies independent sources, and t-SNE reveals clusters in high-dimensional data.</p>
+                    </div>
                     <div class="technique-content">
                         <div class="extraction-methods">
                             <button id="apply-pca" class="btn btn-secondary">Principal Component Analysis</button>
@@ -67,7 +77,10 @@
 
                 <!-- Text Feature Engineering -->
                 <div class="technique-category">
-                    <h4>Text Feature Engineering</h4>
+                    <h4><i class="fas fa-file-text me-2"></i>Text Feature Engineering</h4>
+                    <div class="alert alert-info mb-3" role="alert">
+                        <p><strong>Description:</strong> Extract meaningful features from text data using NLP techniques. Convert text to numerical representations through TF-IDF, word embeddings, sentiment analysis, and n-gram extraction.</p>
+                    </div>
                     <div class="technique-content">
                         <div class="form-group">
                             <label for="text-columns">Select Text Columns:</label>
@@ -86,7 +99,10 @@
 
                 <!-- Interaction Features -->
                 <div class="technique-category">
-                    <h4>Interaction Features</h4>
+                    <h4><i class="fas fa-exchange-alt me-2"></i>Feature Interactions</h4>
+                    <div class="alert alert-info mb-3" role="alert">
+                        <p><strong>Description:</strong> Create new features by combining existing ones to capture relationships between variables. Interaction features reveal how variables work together to influence the target variable.</p>
+                    </div>
                     <div class="technique-content">
                         <div class="form-group">
                             <label>Select Features:</label>
@@ -100,7 +116,10 @@
 
                 <!-- Feature Selection -->
                 <div class="technique-category">
-                    <h4>Feature Selection</h4>
+                    <h4><i class="fas fa-filter me-2"></i>Intelligent Feature Selection</h4>
+                    <div class="alert alert-warning mb-3" role="alert">
+                        <p><strong>Description:</strong> Automatically identify and select the most relevant features for your model. Use statistical tests, recursive elimination, and mutual information to remove redundant or irrelevant features, improving model performance and reducing overfitting.</p>
+                    </div>
                     <div class="technique-content">
                         <div class="form-group">
                             <label for="fs-method">Method:</label>

@@ -74,12 +74,18 @@
 
         <!-- Basic Transformations Tab -->
         <div class="fe-tab-content active" id="basic-transformations">
+            <div class="alert alert-info" role="alert">
+                <h5><i class="fas fa-info-circle me-2"></i>Basic Transformations</h5>
+                <p><strong>Purpose:</strong> Transform features to improve model performance and data quality.</p>
+                <p><strong>Description:</strong> These fundamental transformations prepare your data for machine learning by normalizing scales, encoding categorical variables, and creating meaningful groupings. Each transformation maintains the underlying data relationships while making them more suitable for analysis.</p>
+            </div>
             <div class="row">
                 <!-- Scaling -->
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-header">
-                            <h6><i class="fas fa-expand-arrows-alt me-2"></i>Scaling</h6>
+                            <h6><i class="fas fa-expand-arrows-alt me-2"></i>Feature Scaling</h6>
+                            <small class="text-muted">Normalize feature ranges for consistent model training</small>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -105,7 +111,8 @@
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-header">
-                            <h6><i class="fas fa-code me-2"></i>Encoding</h6>
+                            <h6><i class="fas fa-code me-2"></i>Categorical Encoding</h6>
+                            <small class="text-muted">Convert categorical variables to numerical format</small>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -131,7 +138,8 @@
                 <div class="col-md-6 mb-4">
                     <div class="card">
                         <div class="card-header">
-                            <h6><i class="fas fa-boxes me-2"></i>Binning</h6>
+                            <h6><i class="fas fa-boxes me-2"></i>Feature Binning</h6>
+                            <small class="text-muted">Group continuous values into discrete bins</small>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -162,6 +170,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h6><i class="fas fa-function me-2"></i>Mathematical Transform</h6>
+                            <small class="text-muted">Apply mathematical functions to normalize distributions</small>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -188,9 +197,15 @@
 
         <!-- Missing Values Tab -->
         <div class="fe-tab-content" id="missing-values">
+            <div class="alert alert-warning" role="alert">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Missing Values Treatment</h5>
+                <p><strong>Purpose:</strong> Handle missing data to prevent model errors and bias.</p>
+                <p><strong>Description:</strong> Missing values can severely impact model performance. Choose appropriate imputation strategies based on your data type and analysis requirements. Consider the pattern of missingness (random vs. systematic) when selecting methods.</p>
+            </div>
             <div class="card">
                 <div class="card-header">
-                    <h6><i class="fas fa-question-circle me-2"></i>Handle Missing Values</h6>
+                    <h6><i class="fas fa-question-circle me-2"></i>Missing Value Imputation</h6>
+                    <small class="text-muted">Replace missing values with computed estimates</small>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -223,9 +238,15 @@
 
         <!-- Feature Creation Tab -->
         <div class="fe-tab-content" id="feature-creation">
+            <div class="alert alert-success" role="alert">
+                <h5><i class="fas fa-lightbulb me-2"></i>Feature Creation</h5>
+                <p><strong>Purpose:</strong> Generate new features from existing ones to capture relationships and improve predictive power.</p>
+                <p><strong>Description:</strong> Feature creation involves combining existing features through mathematical operations to reveal hidden patterns. New features can capture domain knowledge, polynomial relationships, and interaction effects that enhance model performance.</p>
+            </div>
             <div class="card">
                 <div class="card-header">
-                    <h6><i class="fas fa-plus-circle me-2"></i>Create New Features</h6>
+                    <h6><i class="fas fa-plus-circle me-2"></i>Arithmetic Feature Generation</h6>
+                    <small class="text-muted">Combine features using mathematical operations</small>
                 </div>
                 <div class="card-body">
                     <div class="row">

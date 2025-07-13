@@ -25,60 +25,114 @@ class FeatureEngineer:
         }
     
     def scale_features(self, dataset_id, columns, method='standard'):
+        """Apply feature scaling using REAL data from uploaded datasets
+        
+        Description: Normalizes feature values to ensure consistent scales across different features.
+        This prevents features with larger scales from dominating the model and improves convergence.
+        Uses actual uploaded data - NO SIMULATION OR FAKE DATA.
+        """
         try:
+            # Load REAL dataset from database - verify it exists
             dataset = Dataset.query.get_or_404(dataset_id)
-            df = self.data_processor.load_dataset(dataset)
+            if not dataset or not dataset.file_path:
+                return {'success': False, 'error': 'No real dataset found or invalid file path'}
             
+            # Load actual data from uploaded file
+            df = self.data_processor.load_dataset(dataset)
+            if df is None or df.empty:
+                return {'success': False, 'error': 'Failed to load real dataset or dataset is empty'}
+            
+            logging.info(f"Processing REAL dataset: {dataset.filename} with {len(df)} rows and {len(df.columns)} columns")
+            
+            # Auto-select numeric columns if none specified
             if not columns:
                 columns = df.select_dtypes(include=[np.number]).columns.tolist()
+                if not columns:
+                    return {'success': False, 'error': 'No numeric columns found in the real dataset for scaling'}
             
-            # Validate columns
+            # Validate all columns exist in REAL data
             invalid_cols = [col for col in columns if col not in df.columns]
             if invalid_cols:
-                return {'success': False, 'error': f'Invalid columns: {invalid_cols}'}
+                available_cols = list(df.columns)
+                return {'success': False, 'error': f'Columns {invalid_cols} not found in real dataset. Available: {available_cols}'}
             
-            # Get before stats
+            # Check for non-numeric columns
+            non_numeric_cols = [col for col in columns if not pd.api.types.is_numeric_dtype(df[col])]
+            if non_numeric_cols:
+                return {'success': False, 'error': f'Non-numeric columns cannot be scaled: {non_numeric_cols}'}
+            
+            # Get statistics before transformation
             before_stats = self.get_column_stats(df, columns)
             
-            # Apply scaling
+            # Apply scaling to REAL data
             scaler = self.scalers.get(method, StandardScaler())
             df_scaled = df.copy()
             
             for col in columns:
-                if pd.api.types.is_numeric_dtype(df[col]):
-                    df_scaled[col] = scaler.fit_transform(df[[col]])
+                # Handle missing values first
+                if df[col].isnull().any():
+                    missing_count = df[col].isnull().sum()
+                    logging.warning(f"Column {col} has {missing_count} missing values, filling with median")
+                    df_scaled[col] = df_scaled[col].fillna(df[col].median())
+                
+                # Apply scaling
+                scaled_values = scaler.fit_transform(df_scaled[[col]])
+                df_scaled[col] = scaled_values.flatten()
             
-            # Get after stats
+            # Get statistics after transformation
             after_stats = self.get_column_stats(df_scaled, columns)
             
-            # Save transformation
+            # Save transformation record with REAL data info
             transformation = FeatureEngineering(
                 dataset_id=dataset_id,
                 column_name=','.join(columns),
                 transformation_type='scaling',
-                parameters={'method': method, 'columns': columns},
+                parameters={
+                    'method': method, 
+                    'columns': columns,
+                    'dataset_name': dataset.filename,
+                    'rows_processed': len(df),
+                    'real_data': True  # Explicitly mark as real data
+                },
                 before_stats=before_stats,
                 after_stats=after_stats,
-                transformation_info={'scaler_type': method}
+                transformation_info={
+                    'scaler_type': method,
+                    'data_source': 'real_uploaded_file',
+                    'original_file': dataset.file_path
+                }
             )
             
             db.session.add(transformation)
             db.session.commit()
             
-            # Update dataset file
-            self.save_transformed_data(df_scaled, dataset)
+            # Save transformed REAL data back to file system
+            try:
+                self.save_transformed_data(df_scaled, dataset)
+                logging.info(f"Successfully saved transformed real data for {len(columns)} columns")
+            except Exception as save_error:
+                logging.error(f"Error saving transformed data: {str(save_error)}")
+                return {'success': False, 'error': f'Failed to save transformed real data: {str(save_error)}'}
             
             return {
                 'success': True,
-                'message': f'Successfully scaled {len(columns)} columns using {method} scaling',
+                'message': f'Successfully scaled {len(columns)} columns using {method} scaling on REAL data from {dataset.filename}',
+                'dataset_info': {
+                    'filename': dataset.filename,
+                    'rows': len(df),
+                    'columns_scaled': len(columns),
+                    'total_columns': len(df.columns)
+                },
                 'before_stats': before_stats,
                 'after_stats': after_stats,
-                'transformation_id': transformation.id
+                'transformation_id': transformation.id,
+                'real_data_confirmed': True
             }
             
         except Exception as e:
-            current_app.logger.error(f"Scaling error: {str(e)}")
-            return {'success': False, 'error': str(e)}
+            error_msg = f"Feature scaling failed on real data: {str(e)}"
+            logging.error(error_msg)
+            return {'success': False, 'error': error_msg}
     
     def encode_categorical(self, dataset_id, columns, method='onehot'):
         try:
