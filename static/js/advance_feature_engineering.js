@@ -1,3 +1,5 @@
+console.log('Advanced Feature Engineering JavaScript loaded!');
+
 document.addEventListener('DOMContentLoaded', function() {
     // Global variables
     let currentDatasetId = null;
