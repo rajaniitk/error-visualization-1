@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showLoading('Loading datasets...');
             
-            // Fetch real datasets from the API
-            const response = await fetch('/api/data/datasets');
+            // Fetch real datasets from the API - FIXED to use correct endpoint
+            const response = await fetch('/api/feature/datasets');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -199,14 +199,13 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading('Applying scaling transformation...');
         
         try {
-            const response = await fetch('/api/feature/scale', {
+            const response = await fetch(`/api/feature/scale/${currentDatasetId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    dataset_id: currentDatasetId,
-                    feature: featureName,
+                    columns: [featureName],
                     method: scalingMethod
                 })
             });
@@ -254,14 +253,13 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading('Applying encoding transformation...');
         
         try {
-            const response = await fetch('/api/feature/encode', {
+            const response = await fetch(`/api/feature/encode/${currentDatasetId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    dataset_id: currentDatasetId,
-                    feature: featureName,
+                    columns: [featureName],
                     method: encodingMethod
                 })
             });
